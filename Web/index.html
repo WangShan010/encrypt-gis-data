@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web端</title>
+    <script src="./lib/axios.min.js"></script>
+    <script src="./lib/crypto-js.min.js"></script>
+</head>
+<body>
+<img id="img" width="500">
+<script type="module">
+    import CryptoUtil from './lib/CryptoUtil.js';
+
+
+    function hexToBlob(hex) {
+        let bytes = new Uint8Array(hex.length / 2);
+        for (let i = 0; i < hex.length; i += 2) {
+            bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
+        }
+        return new Blob([bytes]);
+    }
+
+    async function main() {
+        let {data} = await axios.get('http://localhost:3000/worldImage.jpg');
+
+        data = CryptoUtil.Decrypt(data, '1234567890');
+
+        let blob = hexToBlob(data);
+
+        let img = document.getElementById('img');
+
+        img.src = window.URL.createObjectURL(blob);
+
+        console.log(blob);
+    }
+
+    main();
+</script>
+</body>
+</html>
